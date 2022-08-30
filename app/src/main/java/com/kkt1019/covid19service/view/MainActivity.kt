@@ -5,16 +5,18 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.kkt1019.covid19service.R
+import com.kkt1019.covid19service.model.Covid19Place
 import com.kkt1019.covid19service.model.covid19ItemVO
-import com.kkt1019.covid19service.utils.RetrofitHelper
-import com.kkt1019.covid19service.utils.RetrofitService
+import com.kkt1019.covid19service.utils.db.Covid19Database
+import com.kkt1019.covid19service.utils.network.RetrofitHelper
+import com.kkt1019.covid19service.utils.network.RetrofitService
 import com.naver.maps.map.NaverMapSdk
 import com.naver.maps.map.NaverMapSdk.NaverCloudPlatformClient
 import retrofit2.Call
 import retrofit2.Response
-import javax.security.auth.callback.Callback
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -30,8 +32,12 @@ class MainActivity : AppCompatActivity() {
         call.enqueue(object : retrofit2.Callback<covid19ItemVO> {
             override fun onResponse(call: Call<covid19ItemVO>, response: Response<covid19ItemVO>) {
 
-                val covid19Response: covid19ItemVO? = response.body()
-                Log.i("ccc", covid19Response?.data?.size.toString())
+                var covid19Info : Array<Covid19Place> = response.body()!!.data.toTypedArray()
+                var db : Covid19Database? = Covid19Database.getDatabase(applicationContext)
+
+                db?.covid19Dao()?.insertCovid19Place(*covid19Info)
+                Log.i("kkk", db?.covid19Dao()?.getAllCovid19Place().toString())
+
 
             }
 
@@ -40,5 +46,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+
     }
+
 }

@@ -1,4 +1,4 @@
-package com.kkt1019.covid19service.utils
+package com.kkt1019.covid19service.utils.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

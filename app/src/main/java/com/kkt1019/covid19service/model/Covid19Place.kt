@@ -4,35 +4,36 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+data class covid19ItemVO(var data:MutableList<Covid19Place>)
+
 @Entity(tableName = "covid19Place")
 data class Covid19Place(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int?,
 
     @ColumnInfo(name = "address")
-    val address: String,
+    val address: String?,
 
     @ColumnInfo(name = "centerName")
-    val centerName: String,
+    val centerName: String?,
 
     @ColumnInfo(name = "facilityName")
-    val facilityName: String,
+    val facilityName: String?,
 
     @ColumnInfo(name = "phoneNumber")
-    val phoneNumber: String,
+    val phoneNumber: String?,
 
     @ColumnInfo(name = "updatedAt")
-    val updatedAt: String,
+    val updatedAt: String?,
 
     @ColumnInfo(name = "lat")
-    val lat: String,
+    val lat: String?,
 
     @ColumnInfo(name = "lng")
-    val lng: String,
+    val lng: String?,
 
     @ColumnInfo(name = "centerType")
-    val centerType: String,
+    val centerType: String?
 
-
-)
+    )
