@@ -1,4 +1,4 @@
-package com.kkt1019.covid19service.utils.db
+package com.kkt1019.covid19service.repositori.db
 
 import androidx.room.*
 import com.kkt1019.covid19service.model.Covid19Place

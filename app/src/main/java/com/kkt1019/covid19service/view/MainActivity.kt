@@ -7,15 +7,22 @@ import androidx.appcompat.app.AppCompatActivity
 import com.kkt1019.covid19service.R
 import com.kkt1019.covid19service.model.Covid19Place
 import com.kkt1019.covid19service.model.covid19ItemVO
-import com.kkt1019.covid19service.utils.db.Covid19Database
+import com.kkt1019.covid19service.repositori.db.Covid19Database
 import com.kkt1019.covid19service.utils.network.RetrofitHelper
-import com.kkt1019.covid19service.utils.network.RetrofitService
+import com.kkt1019.covid19service.repositori.RetrofitService
+import com.naver.maps.map.LocationTrackingMode
+import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapSdk
 import com.naver.maps.map.NaverMapSdk.NaverCloudPlatformClient
+import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.util.FusedLocationSource
 import retrofit2.Call
 import retrofit2.Response
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    private lateinit var locationSource: FusedLocationSource
+    private lateinit var naverMap: NaverMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,29 +31,31 @@ class MainActivity : AppCompatActivity() {
         //지도
         NaverMapSdk.getInstance(this).client = NaverCloudPlatformClient("ght6e8nfpq")
 
-        //공공데이터포털 API 받아오기
-        val retrofit = RetrofitHelper.covid19Retrofit()
-        val retrofitService =retrofit.create(RetrofitService::class.java)
-        val call= retrofitService.covid19Data("H7PvoIiO2D6+qVfe6kF2WAoJgdpbVUtJT52Wx7dL6+DLP4IEk5i5xqP+GZMDktix9xaYS03X6YP4JtLGSnuunw==")
+        locationSource =
+            FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
 
-        call.enqueue(object : retrofit2.Callback<covid19ItemVO> {
-            override fun onResponse(call: Call<covid19ItemVO>, response: Response<covid19ItemVO>) {
+    }
 
-                var covid19Info : Array<Covid19Place> = response.body()!!.data.toTypedArray()
-                var db : Covid19Database? = Covid19Database.getDatabase(applicationContext)
-
-                db?.covid19Dao()?.insertCovid19Place(*covid19Info)
-                Log.i("kkk", db?.covid19Dao()?.getAllCovid19Place().toString())
-
-
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>,
+                                            grantResults: IntArray) {
+        if (locationSource.onRequestPermissionsResult(requestCode, permissions,
+                grantResults)) {
+            if (!locationSource.isActivated) { // 권한 거부됨
+                naverMap.locationTrackingMode = LocationTrackingMode.None
             }
+            return
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 
-            override fun onFailure(call: Call<covid19ItemVO>, t: Throwable) {
-                AlertDialog.Builder(this@MainActivity).setMessage("error : ${t.message}").create().show()
-            }
+    override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
+        naverMap.locationSource = locationSource
+    }
 
-        })
-
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
 }

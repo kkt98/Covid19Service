@@ -1,4 +1,4 @@
-package com.kkt1019.covid19service.utils.db
+package com.kkt1019.covid19service.repositori.db
 
 import android.content.Context
 import androidx.room.Database

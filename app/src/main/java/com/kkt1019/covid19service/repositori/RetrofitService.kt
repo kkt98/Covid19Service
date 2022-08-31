@@ -1,4 +1,4 @@
-package com.kkt1019.covid19service.utils.network
+package com.kkt1019.covid19service.repositori
 
 import com.kkt1019.covid19service.model.Covid19Place
 import com.kkt1019.covid19service.model.covid19ItemVO
