@@ -3,25 +3,21 @@ package com.kkt1019.covid19service.repositori
 import android.content.Context
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.LiveData
 import com.kkt1019.covid19service.model.Covid19Place
 import com.kkt1019.covid19service.model.covid19ItemVO
+import com.kkt1019.covid19service.repositori.db.Covid19Dao
 import com.kkt1019.covid19service.repositori.db.Covid19Database
 import com.kkt1019.covid19service.utils.network.RetrofitHelper
 import retrofit2.Call
 import retrofit2.Response
 
-class Repository(var context : Context) {
+class Repository(var context : Context, private val Covid19Dao: Covid19Dao) {
 
     private val database =  Covid19Database.getDatabase(context)
-    private  val dao = database?.covid19Dao()
 
-    var data = dao?.getAllCovid19Place()
+    val getAllCovid19Place : LiveData<List<Covid19Place>> = Covid19Dao.getAllCovid19Place()
 
-    fun getApiData(): List<Covid19Place>? {
-
-        return data
-
-    }
 
     fun startAPI(){
 
@@ -51,3 +47,4 @@ class Repository(var context : Context) {
     }
 
 }
+

@@ -1,5 +1,6 @@
 package com.kkt1019.covid19service.repositori.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.kkt1019.covid19service.model.Covid19Place
 
@@ -7,7 +8,7 @@ import com.kkt1019.covid19service.model.Covid19Place
 interface Covid19Dao {
 
     @Query("SELECT * FROM covid19Place")
-    fun getAllCovid19Place(): List<Covid19Place>
+    fun getAllCovid19Place(): LiveData<List<Covid19Place>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCovid19Place(vararg covid19Places: Covid19Place)
