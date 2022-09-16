@@ -16,7 +16,9 @@ import com.kkt1019.covid19service.viewmodel.MyViewModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.NaverMapSdk.NaverCloudPlatformClient
+import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.map.util.MarkerIcons
 
@@ -118,8 +120,36 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     marker.icon = MarkerIcons.BLACK
                     marker.iconTintColor = Color.RED
 
+                    marker.onClickListener
+
                 }
 
+                //마커 클릭시 정보 띄우기
+                val infoWindow = InfoWindow()
+                infoWindow.adapter = object : InfoWindow.DefaultTextAdapter(this) {
+                    override fun getText(infoWindow: InfoWindow): CharSequence {
+
+                        return "센터 이름 : ${data.centerName} \n 시설명 : ${data.facilityName} \n 주소 : ${data.address}" +
+                                "\n 전화번호 : ${data.phoneNumber} \n 센터 유형 : ${data.centerType}"
+                    }
+                }
+
+                // 마커를 클릭하면:
+                val listener = Overlay.OnClickListener { overlay ->
+                    val marker = overlay as Marker
+
+                    if (marker.infoWindow == null) {
+                        // 현재 마커에 정보 창이 열려있지 않을 경우 열기
+                        infoWindow.open(marker)
+                    } else {
+                        // 이미 현재 마커에 정보 창이 열려있을 경우 닫음
+                        infoWindow.close()
+                    }
+
+                    true
+                }
+
+                marker.onClickListener = listener
 
             }
 
